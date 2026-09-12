@@ -62,7 +62,10 @@ class AppTheme {
       elevation: 0,
       centerTitle: false,
     ),
-    textTheme: _textTheme(AppColors.textPrimaryDark, AppColors.textSecondaryDark),
+    textTheme: _textTheme(
+      AppColors.textPrimaryDark,
+      AppColors.textSecondaryDark,
+    ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.primary,
@@ -89,12 +92,36 @@ class AppTheme {
 
   static TextTheme _textTheme(Color primary, Color secondary) {
     return TextTheme(
-      headlineSmall: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: primary),
-      titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: primary),
-      titleMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: primary),
-      bodyLarge: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: primary),
-      bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, color: secondary),
-      labelSmall: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: secondary),
+      headlineSmall: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.w700,
+        color: primary,
+      ),
+      titleLarge: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+        color: primary,
+      ),
+      titleMedium: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        color: primary,
+      ),
+      bodyLarge: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w400,
+        color: primary,
+      ),
+      bodyMedium: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+        color: secondary,
+      ),
+      labelSmall: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        color: secondary,
+      ),
     );
   }
 }

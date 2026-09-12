@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Bonus 3 — Dark Mode, persisted across app restarts.
 class ThemeProvider extends ChangeNotifier {
   static const _prefsKey = 'theme_mode';
 

@@ -46,7 +46,10 @@ class _ContactsScreenState extends State<ContactsScreen> {
                 prefixIcon: const Icon(Icons.search),
                 filled: true,
                 fillColor: Theme.of(context).colorScheme.surface,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide.none,
+                ),
               ),
             ),
           ),
@@ -56,11 +59,15 @@ class _ContactsScreenState extends State<ContactsScreen> {
     );
 
     if (widget.embedded) return body;
-    return Scaffold(appBar: AppBar(title: const Text('Contacts')), body: body);
+    return Scaffold(
+      appBar: AppBar(title: const Text('Contacts')),
+      body: body,
+    );
   }
 
   Widget _buildList(ContactsProvider contacts) {
-    if (contacts.isLoading) return const LoadingIndicator(label: 'Loading contacts…');
+    if (contacts.isLoading)
+      return const LoadingIndicator(label: 'Loading contacts…');
     if (contacts.errorMessage != null) {
       return EmptyState(icon: Icons.wifi_off, title: contacts.errorMessage!);
     }

@@ -17,9 +17,12 @@ class AppStrings {
   static const String haveAccount = 'Already have an account? ';
 
   // Errors
-  static const String noInternet = 'No internet connection. Please check your network.';
-  static const String micPermissionDenied = 'Microphone permission is required to make calls.';
-  static const String cameraPermissionDenied = 'Camera permission is required for video calls.';
+  static const String noInternet =
+      'No internet connection. Please check your network.';
+  static const String micPermissionDenied =
+      'Microphone permission is required to make calls.';
+  static const String cameraPermissionDenied =
+      'Camera permission is required for video calls.';
   static const String permissionPermanentlyDenied =
       'Permission was permanently denied. Please enable it from app settings.';
   static const String callFailed = 'Call failed to connect. Please try again.';

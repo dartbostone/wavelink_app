@@ -33,7 +33,10 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     final auth = context.read<AuthProvider>();
-    final success = await auth.login(_emailController.text, _passwordController.text);
+    final success = await auth.login(
+      _emailController.text,
+      _passwordController.text,
+    );
     if (!success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(auth.errorMessage ?? AppStrings.genericError)),
@@ -64,15 +67,22 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: const Icon(Icons.call, color: Colors.white, size: 32),
                 ),
                 const SizedBox(height: 20),
-                Text('Welcome back', style: Theme.of(context).textTheme.headlineSmall),
+                Text(
+                  'Welcome back',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
                 const SizedBox(height: 4),
-                Text('Sign in to continue to ${AppStrings.appName}',
-                    style: Theme.of(context).textTheme.bodyMedium),
+                Text(
+                  'Sign in to continue to ${AppStrings.appName}',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
                 const SizedBox(height: 32),
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(labelText: AppStrings.emailOrPhone),
+                  decoration: const InputDecoration(
+                    labelText: AppStrings.emailOrPhone,
+                  ),
                   validator: Validators.email,
                 ),
                 const SizedBox(height: 16),
@@ -82,7 +92,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: InputDecoration(
                     labelText: AppStrings.password,
                     suffixIcon: IconButton(
-                      icon: Icon(_obscure ? Icons.visibility_off : Icons.visibility),
+                      icon: Icon(
+                        _obscure ? Icons.visibility_off : Icons.visibility,
+                      ),
                       onPressed: () => setState(() => _obscure = !_obscure),
                     ),
                   ),
@@ -107,7 +119,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: [
                           TextSpan(
                             text: AppStrings.createAccount,
-                            style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600),
+                            style: const TextStyle(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ],
                       ),

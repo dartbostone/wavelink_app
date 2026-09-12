@@ -1,7 +1,5 @@
-/// Whether the call carries video.
 enum CallType { audio, video }
 
-/// All call states the UI must account for (spec §Call States).
 enum CallStatus {
   calling,
   ringing,
@@ -18,7 +16,8 @@ enum CallStatus {
 CallType callTypeFromString(String value) =>
     value == 'video' ? CallType.video : CallType.audio;
 
-String callTypeToString(CallType type) => type == CallType.video ? 'video' : 'audio';
+String callTypeToString(CallType type) =>
+    type == CallType.video ? 'video' : 'audio';
 
 CallStatus callStatusFromString(String value) {
   return CallStatus.values.firstWhere(
@@ -88,11 +87,15 @@ class CallModel {
       type: callTypeFromString(map['type'] as String? ?? 'audio'),
       status: callStatusFromString(map['status'] as String? ?? 'ended'),
       channelId: map['channelId'] as String? ?? id,
-      createdAt: DateTime.tryParse(map['createdAt']?.toString() ?? '') ?? DateTime.now(),
+      createdAt:
+          DateTime.tryParse(map['createdAt']?.toString() ?? '') ??
+          DateTime.now(),
       connectedAt: map['connectedAt'] != null
           ? DateTime.tryParse(map['connectedAt'].toString())
           : null,
-      endedAt: map['endedAt'] != null ? DateTime.tryParse(map['endedAt'].toString()) : null,
+      endedAt: map['endedAt'] != null
+          ? DateTime.tryParse(map['endedAt'].toString())
+          : null,
     );
   }
 
@@ -113,7 +116,11 @@ class CallModel {
     };
   }
 
-  CallModel copyWith({CallStatus? status, DateTime? connectedAt, DateTime? endedAt}) {
+  CallModel copyWith({
+    CallStatus? status,
+    DateTime? connectedAt,
+    DateTime? endedAt,
+  }) {
     return CallModel(
       id: id,
       callerId: callerId,

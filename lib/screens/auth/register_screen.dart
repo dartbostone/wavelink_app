@@ -62,9 +62,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Create your account', style: Theme.of(context).textTheme.headlineSmall),
+                Text(
+                  'Create your account',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
                 const SizedBox(height: 4),
-                Text('Join ${AppStrings.appName} in seconds', style: Theme.of(context).textTheme.bodyMedium),
+                Text(
+                  'Join ${AppStrings.appName} in seconds',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
                 const SizedBox(height: 28),
                 TextFormField(
                   controller: _nameController,
@@ -75,7 +81,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(labelText: AppStrings.email),
+                  decoration: const InputDecoration(
+                    labelText: AppStrings.email,
+                  ),
                   validator: Validators.email,
                 ),
                 const SizedBox(height: 16),
@@ -85,7 +93,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   decoration: InputDecoration(
                     labelText: AppStrings.password,
                     suffixIcon: IconButton(
-                      icon: Icon(_obscure ? Icons.visibility_off : Icons.visibility),
+                      icon: Icon(
+                        _obscure ? Icons.visibility_off : Icons.visibility,
+                      ),
                       onPressed: () => setState(() => _obscure = !_obscure),
                     ),
                   ),
@@ -95,8 +105,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 TextFormField(
                   controller: _confirmController,
                   obscureText: _obscure,
-                  decoration: const InputDecoration(labelText: AppStrings.confirmPassword),
-                  validator: (v) => Validators.confirmPassword(v, _passwordController.text),
+                  decoration: const InputDecoration(
+                    labelText: AppStrings.confirmPassword,
+                  ),
+                  validator: (v) =>
+                      Validators.confirmPassword(v, _passwordController.text),
                 ),
                 const SizedBox(height: 28),
                 CommonButton(
@@ -115,7 +128,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         children: [
                           TextSpan(
                             text: AppStrings.login,
-                            style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600),
+                            style: const TextStyle(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ],
                       ),

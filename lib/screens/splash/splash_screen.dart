@@ -29,18 +29,28 @@ class SplashScreen extends StatelessWidget {
             const SizedBox(height: 24),
             const Text(
               AppStrings.appName,
-              style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 8),
             Text(
               AppStrings.tagline,
-              style: TextStyle(color: Colors.white.withOpacity(0.85), fontSize: 14),
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.85),
+                fontSize: 14,
+              ),
             ),
             const SizedBox(height: 40),
             const SizedBox(
               width: 28,
               height: 28,
-              child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.6),
+              child: CircularProgressIndicator(
+                color: Colors.white,
+                strokeWidth: 2.6,
+              ),
             ),
           ],
         ),

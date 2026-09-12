@@ -70,7 +70,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   validator: Validators.name,
                 ),
                 const SizedBox(height: 24),
-                CommonButton(label: 'Save changes', isLoading: _saving, onPressed: _save),
+                CommonButton(
+                  label: 'Save changes',
+                  isLoading: _saving,
+                  onPressed: _save,
+                ),
               ],
             ),
           ),

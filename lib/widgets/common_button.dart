@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import '../core/constants/app_colors.dart';
 
-/// Primary button with a built-in loading state (spec: "Proper button
-/// states").
 class CommonButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
@@ -26,9 +24,15 @@ class CommonButton extends StatelessWidget {
         ? const SizedBox(
             height: 20,
             width: 20,
-            child: CircularProgressIndicator(strokeWidth: 2.4, color: Colors.white),
+            child: CircularProgressIndicator(
+              strokeWidth: 2.4,
+              color: Colors.white,
+            ),
           )
-        : Text(label, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600));
+        : Text(
+            label,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          );
 
     if (outlined) {
       return SizedBox(
@@ -38,7 +42,9 @@ class CommonButton extends StatelessWidget {
           style: OutlinedButton.styleFrom(
             foregroundColor: color ?? AppColors.primary,
             side: BorderSide(color: color ?? AppColors.primary),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
           ),
           child: child,
         ),
@@ -49,7 +55,9 @@ class CommonButton extends StatelessWidget {
       height: 52,
       child: ElevatedButton(
         onPressed: disabled ? null : onPressed,
-        style: color != null ? ElevatedButton.styleFrom(backgroundColor: color) : null,
+        style: color != null
+            ? ElevatedButton.styleFrom(backgroundColor: color)
+            : null,
         child: child,
       ),
     );

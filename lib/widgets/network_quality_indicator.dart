@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../services/calling_service.dart';
 
-/// Bonus 9 — Good / Fair / Poor connection indicator shown during calls.
 class NetworkQualityIndicator extends StatelessWidget {
   final NetworkQuality quality;
 
@@ -36,7 +35,10 @@ class NetworkQualityIndicator extends StatelessWidget {
             }),
           ),
           const SizedBox(width: 6),
-          Text(label, style: const TextStyle(color: Colors.white, fontSize: 12)),
+          Text(
+            label,
+            style: const TextStyle(color: Colors.white, fontSize: 12),
+          ),
         ],
       ),
     );

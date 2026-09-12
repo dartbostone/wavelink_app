@@ -14,17 +14,14 @@ import '../../services/calling_service.dart';
 import '../../widgets/call_control_button.dart';
 import '../../widgets/network_quality_indicator.dart';
 
-/// Spec §7 — Video Calling Screen: remote video (fullscreen), local
-/// camera preview (small overlay), caller info, and mute/camera/switch/end
-/// controls.
 class VideoCallScreen extends StatefulWidget {
   final UserModel? callee;
   final CallModel? existingCall;
 
   const VideoCallScreen({super.key, this.callee}) : existingCall = null;
   const VideoCallScreen.fromAccepted({super.key, required CallModel call})
-      : existingCall = call,
-        callee = null;
+    : existingCall = call,
+      callee = null;
 
   @override
   State<VideoCallScreen> createState() => _VideoCallScreenState();
@@ -68,10 +65,10 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
     if (caller == null) return;
     try {
       await context.read<CallProvider>().placeCall(
-            caller: caller,
-            callee: widget.callee!,
-            type: CallType.video,
-          );
+        caller: caller,
+        callee: widget.callee!,
+        type: CallType.video,
+      );
     } catch (_) {
       if (mounted) setState(() => _localError = AppStrings.callFailed);
     } finally {
@@ -101,13 +98,16 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
         final isIncomingSide = call.calleeId == myUid;
         final otherName = isIncomingSide ? call.callerName : call.calleeName;
         final engine = CallingService.instance.engine;
-        final connected = call.status == CallStatus.connected || call.status == CallStatus.inCall;
+        final connected =
+            call.status == CallStatus.connected ||
+            call.status == CallStatus.inCall;
 
         _maybePopOnTerminal(context, call.status);
 
         final statusText = switch (call.status) {
           CallStatus.ringing => 'Ringing…',
-          CallStatus.connected || CallStatus.inCall => DateFormatUtils.duration(callProvider.elapsed),
+          CallStatus.connected ||
+          CallStatus.inCall => DateFormatUtils.duration(callProvider.elapsed),
           CallStatus.busy => 'User is busy',
           CallStatus.rejected => AppStrings.callRejected,
           CallStatus.missed => 'No answer',
@@ -140,16 +140,32 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
                             children: [
                               CircleAvatar(
                                 radius: 56,
-                                backgroundColor: AppColors.primary.withOpacity(0.25),
+                                backgroundColor: AppColors.primary.withOpacity(
+                                  0.25,
+                                ),
                                 child: Text(
-                                  otherName.isNotEmpty ? otherName[0].toUpperCase() : '?',
-                                  style: const TextStyle(fontSize: 40, color: Colors.white),
+                                  otherName.isNotEmpty
+                                      ? otherName[0].toUpperCase()
+                                      : '?',
+                                  style: const TextStyle(
+                                    fontSize: 40,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 16),
-                              Text(otherName, style: const TextStyle(color: Colors.white, fontSize: 22)),
+                              Text(
+                                otherName,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 22,
+                                ),
+                              ),
                               const SizedBox(height: 6),
-                              Text(statusText, style: const TextStyle(color: Colors.white70)),
+                              Text(
+                                statusText,
+                                style: const TextStyle(color: Colors.white70),
+                              ),
                             ],
                           ),
                         ),
@@ -185,9 +201,19 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(otherName, style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600)),
+                    Text(
+                      otherName,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     const SizedBox(height: 4),
-                    Text(statusText, style: const TextStyle(color: Colors.white70)),
+                    Text(
+                      statusText,
+                      style: const TextStyle(color: Colors.white70),
+                    ),
                     if (connected) ...[
                       const SizedBox(height: 8),
                       NetworkQualityIndicator(quality: callProvider.quality),
@@ -211,7 +237,9 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
                       onPressed: callProvider.toggleMute,
                     ),
                     CallControlButton(
-                      icon: callProvider.isCameraEnabled ? Icons.videocam : Icons.videocam_off,
+                      icon: callProvider.isCameraEnabled
+                          ? Icons.videocam
+                          : Icons.videocam_off,
                       label: 'Camera',
                       active: !callProvider.isCameraEnabled,
                       onPressed: callProvider.toggleCamera,
@@ -274,11 +302,18 @@ class _ErrorScaffold extends StatelessWidget {
             children: [
               const Icon(Icons.error_outline, color: Colors.white70, size: 48),
               const SizedBox(height: 16),
-              Text(message, style: const TextStyle(color: Colors.white), textAlign: TextAlign.center),
+              Text(
+                message,
+                style: const TextStyle(color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: 24),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Go back', style: TextStyle(color: Colors.white)),
+                child: const Text(
+                  'Go back',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           ),

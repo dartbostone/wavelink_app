@@ -34,16 +34,31 @@ class IncomingCallScreen extends StatelessWidget {
               CircleAvatar(
                 radius: 64,
                 backgroundColor: AppColors.primary.withOpacity(0.25),
-                backgroundImage: call.callerAvatarUrl != null ? NetworkImage(call.callerAvatarUrl!) : null,
+                backgroundImage: call.callerAvatarUrl != null
+                    ? NetworkImage(call.callerAvatarUrl!)
+                    : null,
                 child: call.callerAvatarUrl == null
                     ? Text(
-                        call.callerName.isNotEmpty ? call.callerName[0].toUpperCase() : '?',
-                        style: const TextStyle(fontSize: 44, color: Colors.white, fontWeight: FontWeight.bold),
+                        call.callerName.isNotEmpty
+                            ? call.callerName[0].toUpperCase()
+                            : '?',
+                        style: const TextStyle(
+                          fontSize: 44,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       )
                     : null,
               ),
               const SizedBox(height: 20),
-              Text(call.callerName, style: const TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w600)),
+              Text(
+                call.callerName,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 26,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               const SizedBox(height: 6),
               Text(
                 isVideo ? 'wants to video call' : 'wants to audio call',
@@ -51,7 +66,10 @@ class IncomingCallScreen extends StatelessWidget {
               ),
               const Spacer(flex: 2),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 40),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 40,
+                  vertical: 40,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [

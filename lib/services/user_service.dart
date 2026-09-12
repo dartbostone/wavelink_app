@@ -40,14 +40,27 @@ class UserService {
   List<UserModel> filter(List<UserModel> users, String query) {
     if (query.trim().isEmpty) return users;
     final q = query.trim().toLowerCase();
-    return users.where((u) => u.name.toLowerCase().contains(q) || u.email.toLowerCase().contains(q)).toList();
+    return users
+        .where(
+          (u) =>
+              u.name.toLowerCase().contains(q) ||
+              u.email.toLowerCase().contains(q),
+        )
+        .toList();
   }
 
-  Future<void> updateProfile(String uid, {String? name, String? avatarUrl}) async {
+  Future<void> updateProfile(
+    String uid, {
+    String? name,
+    String? avatarUrl,
+  }) async {
     final updates = <String, dynamic>{};
     if (name != null) updates['name'] = name;
     if (avatarUrl != null) updates['avatarUrl'] = avatarUrl;
     if (updates.isEmpty) return;
-    await _db.collection('users').doc(uid).set(updates, SetOptions(merge: true));
+    await _db
+        .collection('users')
+        .doc(uid)
+        .set(updates, SetOptions(merge: true));
   }
 }

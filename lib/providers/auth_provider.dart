@@ -5,10 +5,6 @@ import '../services/auth_service.dart';
 
 enum AuthStatus { unknown, authenticated, unauthenticated }
 
-/// Exposes auth state + actions to the whole widget tree via [Provider].
-/// Screens read this instead of talking to [AuthService] directly, which
-/// keeps Firebase calls out of the UI layer (spec: "business logic lives
-/// in services; providers connect services to the UI").
 class AuthProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
 
@@ -30,12 +26,17 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<bool> login(String email, String password) => _run(() async {
-        currentUser = await _authService.login(email: email, password: password);
-        status = AuthStatus.authenticated;
-      });
+    currentUser = await _authService.login(email: email, password: password);
+    status = AuthStatus.authenticated;
+  });
 
-  Future<bool> register(String name, String email, String password) => _run(() async {
-        currentUser = await _authService.register(name: name, email: email, password: password);
+  Future<bool> register(String name, String email, String password) =>
+      _run(() async {
+        currentUser = await _authService.register(
+          name: name,
+          email: email,
+          password: password,
+        );
         status = AuthStatus.authenticated;
       });
 

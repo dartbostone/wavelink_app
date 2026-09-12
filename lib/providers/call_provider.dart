@@ -43,7 +43,11 @@ class CallProvider extends ChangeNotifier {
     required CallType type,
   }) async {
     _iAmCaller = true;
-    final call = await _callingService.startCall(caller: caller, callee: callee, type: type);
+    final call = await _callingService.startCall(
+      caller: caller,
+      callee: callee,
+      type: type,
+    );
     activeCall = call;
     isCameraEnabled = type == CallType.video;
     _subscribeToCall(call.id);
@@ -69,10 +73,15 @@ class CallProvider extends ChangeNotifier {
 
   void _subscribeToCall(String callId) {
     _callSub?.cancel();
-    _callSub = _callingService.watchCall(callId).listen(_onCallUpdated, onError: (_) {
-      engineErrorMessage = 'Lost connection to the call.';
-      notifyListeners();
-    });
+    _callSub = _callingService
+        .watchCall(callId)
+        .listen(
+          _onCallUpdated,
+          onError: (_) {
+            engineErrorMessage = 'Lost connection to the call.';
+            notifyListeners();
+          },
+        );
     _qualitySub?.cancel();
     _qualitySub = _callingService.networkQuality.listen((q) {
       quality = q;
@@ -90,7 +99,8 @@ class CallProvider extends ChangeNotifier {
 
   void _onCallUpdated(CallModel call) {
     activeCall = call;
-    if (call.status == CallStatus.connected || call.status == CallStatus.inCall) {
+    if (call.status == CallStatus.connected ||
+        call.status == CallStatus.inCall) {
       _ringTimer?.cancel();
       _startDurationTimer(call);
     }
@@ -101,13 +111,13 @@ class CallProvider extends ChangeNotifier {
   }
 
   bool _isTerminal(CallStatus s) => {
-        CallStatus.ended,
-        CallStatus.rejected,
-        CallStatus.missed,
-        CallStatus.busy,
-        CallStatus.failed,
-        CallStatus.disconnected,
-      }.contains(s);
+    CallStatus.ended,
+    CallStatus.rejected,
+    CallStatus.missed,
+    CallStatus.busy,
+    CallStatus.failed,
+    CallStatus.disconnected,
+  }.contains(s);
 
   void _startRingTimeout() {
     _ringTimer?.cancel();

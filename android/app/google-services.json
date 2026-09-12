@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "840739691330",
+    "project_id": "wavelinkapp-e100c",
+    "storage_bucket": "wavelinkapp-e100c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:840739691330:android:911c884c99c2cad9e2c6db",
+        "android_client_info": {
+          "package_name": "com.example.wavelink_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNkfmbZNq1bjd3_c8WKmqANrs05f3E2W4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

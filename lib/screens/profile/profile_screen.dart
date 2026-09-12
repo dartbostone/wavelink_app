@@ -27,22 +27,36 @@ class ProfileScreen extends StatelessWidget {
             child: CircleAvatar(
               radius: 44,
               backgroundColor: AppColors.primary.withOpacity(0.15),
-              backgroundImage: user?.avatarUrl != null ? NetworkImage(user!.avatarUrl!) : null,
+              backgroundImage: user?.avatarUrl != null
+                  ? NetworkImage(user!.avatarUrl!)
+                  : null,
               child: user?.avatarUrl == null
                   ? Text(
-                      (user?.name.isNotEmpty ?? false) ? user!.name[0].toUpperCase() : '?',
-                      style: const TextStyle(fontSize: 32, color: AppColors.primary, fontWeight: FontWeight.bold),
+                      (user?.name.isNotEmpty ?? false)
+                          ? user!.name[0].toUpperCase()
+                          : '?',
+                      style: const TextStyle(
+                        fontSize: 32,
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
                     )
                   : null,
             ),
           ),
           const SizedBox(height: 16),
           Center(
-            child: Text(user?.name ?? '—', style: Theme.of(context).textTheme.titleLarge),
+            child: Text(
+              user?.name ?? '—',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
           ),
           const SizedBox(height: 4),
           Center(
-            child: Text(user?.email ?? '', style: Theme.of(context).textTheme.bodyMedium),
+            child: Text(
+              user?.email ?? '',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
           ),
           const SizedBox(height: 8),
           Center(
@@ -52,10 +66,19 @@ class ProfileScreen extends StatelessWidget {
                 Container(
                   width: 8,
                   height: 8,
-                  decoration: const BoxDecoration(color: AppColors.online, shape: BoxShape.circle),
+                  decoration: const BoxDecoration(
+                    color: AppColors.online,
+                    shape: BoxShape.circle,
+                  ),
                 ),
                 const SizedBox(width: 6),
-                const Text('Online', style: TextStyle(color: AppColors.online, fontWeight: FontWeight.w600)),
+                const Text(
+                  'Online',
+                  style: TextStyle(
+                    color: AppColors.online,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ],
             ),
           ),
@@ -83,10 +106,18 @@ class ProfileScreen extends StatelessWidget {
                 context: context,
                 builder: (_) => AlertDialog(
                   title: const Text('Log out?'),
-                  content: const Text('You will need to sign in again to make calls.'),
+                  content: const Text(
+                    'You will need to sign in again to make calls.',
+                  ),
                   actions: [
-                    TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
-                    TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Log out')),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: const Text('Log out'),
+                    ),
                   ],
                 ),
               );
@@ -100,6 +131,9 @@ class ProfileScreen extends StatelessWidget {
     );
 
     if (embedded) return body;
-    return Scaffold(appBar: AppBar(title: const Text('Profile')), body: body);
+    return Scaffold(
+      appBar: AppBar(title: const Text('Profile')),
+      body: body,
+    );
   }
 }

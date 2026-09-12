@@ -25,9 +25,13 @@ class CallHistoryScreen extends StatelessWidget {
             stream: CallHistoryService().watchHistory(uid),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
-                return const EmptyState(icon: Icons.wifi_off, title: 'Could not load call history');
+                return const EmptyState(
+                  icon: Icons.wifi_off,
+                  title: 'Could not load call history',
+                );
               }
-              if (!snapshot.hasData) return const LoadingIndicator(label: 'Loading history…');
+              if (!snapshot.hasData)
+                return const LoadingIndicator(label: 'Loading history…');
               final calls = snapshot.data!;
               if (calls.isEmpty) {
                 return const EmptyState(
@@ -40,13 +44,17 @@ class CallHistoryScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 itemCount: calls.length,
                 separatorBuilder: (_, __) => const Divider(height: 1),
-                itemBuilder: (context, i) => _CallHistoryTile(call: calls[i], myUid: uid),
+                itemBuilder: (context, i) =>
+                    _CallHistoryTile(call: calls[i], myUid: uid),
               );
             },
           );
 
     if (embedded) return SafeArea(child: body);
-    return Scaffold(appBar: AppBar(title: const Text('Call History')), body: SafeArea(child: body));
+    return Scaffold(
+      appBar: AppBar(title: const Text('Call History')),
+      body: SafeArea(child: body),
+    );
   }
 }
 
@@ -61,14 +69,17 @@ class _CallHistoryTile extends StatelessWidget {
     final otherName = incoming ? call.callerName : call.calleeName;
     final isMissed = call.status == CallStatus.missed;
     final isRejected = call.status == CallStatus.rejected;
-    final statusColor = (isMissed || isRejected) ? AppColors.danger : AppColors.textSecondary;
+    final statusColor = (isMissed || isRejected)
+        ? AppColors.danger
+        : AppColors.textSecondary;
 
     String statusLabel;
     if (isMissed) {
       statusLabel = 'Missed';
     } else if (isRejected) {
       statusLabel = incoming ? 'Declined' : 'Declined by them';
-    } else if (call.status == CallStatus.failed || call.status == CallStatus.disconnected) {
+    } else if (call.status == CallStatus.failed ||
+        call.status == CallStatus.disconnected) {
       statusLabel = 'Call dropped';
     } else {
       statusLabel = DateFormatUtils.duration(call.duration);
@@ -82,7 +93,10 @@ class _CallHistoryTile extends StatelessWidget {
           color: AppColors.primary,
         ),
       ),
-      title: Text(otherName, style: const TextStyle(fontWeight: FontWeight.w600)),
+      title: Text(
+        otherName,
+        style: const TextStyle(fontWeight: FontWeight.w600),
+      ),
       subtitle: Row(
         children: [
           Icon(
@@ -91,10 +105,16 @@ class _CallHistoryTile extends StatelessWidget {
             color: statusColor,
           ),
           const SizedBox(width: 4),
-          Text(DateFormatUtils.relativeDay(call.createdAt), style: TextStyle(color: statusColor)),
+          Text(
+            DateFormatUtils.relativeDay(call.createdAt),
+            style: TextStyle(color: statusColor),
+          ),
         ],
       ),
-      trailing: Text(statusLabel, style: TextStyle(color: statusColor, fontWeight: FontWeight.w600)),
+      trailing: Text(
+        statusLabel,
+        style: TextStyle(color: statusColor, fontWeight: FontWeight.w600),
+      ),
     );
   }
 }

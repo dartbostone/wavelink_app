@@ -36,12 +36,19 @@ class CallControlButton extends StatelessWidget {
             customBorder: const CircleBorder(),
             child: Padding(
               padding: const EdgeInsets.all(16),
-              child: Icon(icon, color: active ? Colors.black87 : iconColorOnInactive, size: 26),
+              child: Icon(
+                icon,
+                color: active ? Colors.black87 : iconColorOnInactive,
+                size: 26,
+              ),
             ),
           ),
         ),
         const SizedBox(height: 6),
-        Text(label, style: const TextStyle(color: Colors.white70, fontSize: 12)),
+        Text(
+          label,
+          style: const TextStyle(color: Colors.white70, fontSize: 12),
+        ),
       ],
     );
   }

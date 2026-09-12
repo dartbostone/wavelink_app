@@ -2,31 +2,15 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 import '../core/config/platform_config.dart';
 import '../models/call_model.dart';
 import '../models/user_model.dart';
 
-/// Network quality bucket shown to the user (Bonus 9).
 enum NetworkQuality { unknown, good, fair, poor }
 
-/// Owns both halves of "calling":
-///
-/// 1. **Signaling** — who is calling whom, and the call's lifecycle status
-///    (ringing / connected / ended / ...). This runs over Firestore: a
-///    `calls/{callId}` document is created for every call attempt, and both
-///    the caller and callee listen to it in real time.
-/// 2. **Media** — the actual audio/video stream, handled by the Agora RTC
-///    Engine once both parties have agreed to connect.
-///
-/// Firestore was chosen for signaling because it's already the project's
-/// backend (see [UserService]/[AuthService]) and its real-time listeners
-/// are a natural fit for "notify the callee the instant a call doc
-/// appears". Agora was chosen for media because it exposes a small,
-/// well-documented Flutter plugin with a free tier, calls SDK sits above
-/// raw WebRTC signaling/TURN infrastructure we would otherwise have to run
-/// ourselves, and it reports network quality out of the box (Bonus 9).
 class CallingService {
   CallingService._internal();
   static final CallingService instance = CallingService._internal();
@@ -55,13 +39,13 @@ class CallingService {
 
   bool _initialized = false;
 
-  /// Must be called once (e.g. from main.dart) before any call is started.
   Future<void> initializeEngine() async {
     if (_initialized) return;
     if (!PlatformConfig.hasAgoraAppId) {
-      throw StateError(
-        'Missing AGORA_APP_ID. Run with --dart-define=AGORA_APP_ID=your_app_id.',
+      debugPrint(
+        'Agora App ID not provided via --dart-define=AGORA_APP_ID. Call engine uninitialized.',
       );
+      return;
     }
     _engine = createAgoraRtcEngine();
     await _engine!.initialize(

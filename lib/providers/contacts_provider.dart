@@ -20,20 +20,22 @@ class ContactsProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
     _subscription?.cancel();
-    _subscription = _userService.watchContacts(myUid).listen(
-      (users) {
-        _allContacts = users;
-        visibleContacts = _userService.filter(_allContacts, searchQuery);
-        isLoading = false;
-        errorMessage = null;
-        notifyListeners();
-      },
-      onError: (e) {
-        isLoading = false;
-        errorMessage = 'Could not load contacts. Check your connection.';
-        notifyListeners();
-      },
-    );
+    _subscription = _userService
+        .watchContacts(myUid)
+        .listen(
+          (users) {
+            _allContacts = users;
+            visibleContacts = _userService.filter(_allContacts, searchQuery);
+            isLoading = false;
+            errorMessage = null;
+            notifyListeners();
+          },
+          onError: (e) {
+            isLoading = false;
+            errorMessage = 'Could not load contacts. Check your connection.';
+            notifyListeners();
+          },
+        );
   }
 
   void search(String query) {

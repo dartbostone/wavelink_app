@@ -39,7 +39,12 @@ class UserModel {
     };
   }
 
-  UserModel copyWith({String? name, String? avatarUrl, bool? isOnline, DateTime? lastSeen}) {
+  UserModel copyWith({
+    String? name,
+    String? avatarUrl,
+    bool? isOnline,
+    DateTime? lastSeen,
+  }) {
     return UserModel(
       id: id,
       name: name ?? this.name,

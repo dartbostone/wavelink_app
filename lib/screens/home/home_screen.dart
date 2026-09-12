@@ -51,10 +51,26 @@ class _HomeScreenState extends State<HomeScreen> {
         selectedIndex: _index,
         onDestinationSelected: (i) => setState(() => _index = i),
         destinations: const [
-          NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: 'Home'),
-          NavigationDestination(icon: Icon(Icons.people_outline), selectedIcon: Icon(Icons.people), label: 'Contacts'),
-          NavigationDestination(icon: Icon(Icons.call_outlined), selectedIcon: Icon(Icons.call), label: 'Calls'),
-          NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: 'Profile'),
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.people_outline),
+            selectedIcon: Icon(Icons.people),
+            label: 'Contacts',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.call_outlined),
+            selectedIcon: Icon(Icons.call),
+            label: 'Calls',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person_outline),
+            selectedIcon: Icon(Icons.person),
+            label: 'Profile',
+          ),
         ],
       ),
     );
@@ -82,8 +98,14 @@ class _DashboardTab extends StatelessWidget {
                     radius: 26,
                     backgroundColor: AppColors.primary.withOpacity(0.15),
                     child: Text(
-                      (user?.name.isNotEmpty ?? false) ? user!.name[0].toUpperCase() : '?',
-                      style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18),
+                      (user?.name.isNotEmpty ?? false)
+                          ? user!.name[0].toUpperCase()
+                          : '?',
+                      style: const TextStyle(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -91,9 +113,14 @@ class _DashboardTab extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Hi, ${user?.name.split(' ').first ?? 'there'} 👋',
-                            style: Theme.of(context).textTheme.titleLarge),
-                        Text(AppStrings.tagline, style: Theme.of(context).textTheme.bodyMedium),
+                        Text(
+                          'Hi, ${user?.name.split(' ').first ?? 'there'} 👋',
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        Text(
+                          AppStrings.tagline,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
                       ],
                     ),
                   ),
@@ -111,7 +138,10 @@ class _DashboardTab extends StatelessWidget {
                   prefixIcon: const Icon(Icons.search),
                   filled: true,
                   fillColor: Theme.of(context).colorScheme.surface,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
               ),
             ),
@@ -119,23 +149,35 @@ class _DashboardTab extends StatelessWidget {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 4),
-              child: Text('Contacts', style: Theme.of(context).textTheme.titleMedium),
+              child: Text(
+                'Contacts',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
             ),
           ),
           if (contacts.isLoading)
-            const SliverToBoxAdapter(child: SizedBox(height: 120, child: LoadingIndicator()))
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 120, child: LoadingIndicator()),
+            )
           else if (contacts.errorMessage != null)
             SliverToBoxAdapter(
               child: SizedBox(
                 height: 160,
-                child: EmptyState(icon: Icons.wifi_off, title: contacts.errorMessage!),
+                child: EmptyState(
+                  icon: Icons.wifi_off,
+                  title: contacts.errorMessage!,
+                ),
               ),
             )
           else if (contacts.visibleContacts.isEmpty)
             const SliverToBoxAdapter(
               child: SizedBox(
                 height: 160,
-                child: EmptyState(icon: Icons.people_outline, title: 'No contacts yet', subtitle: 'Invite someone to ConnectCall.'),
+                child: EmptyState(
+                  icon: Icons.people_outline,
+                  title: 'No contacts yet',
+                  subtitle: 'Invite someone to ConnectCall.',
+                ),
               ),
             )
           else
@@ -146,25 +188,32 @@ class _DashboardTab extends StatelessWidget {
                   return UserTile(
                     user: contact,
                     onAudioCall: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => AudioCallScreen(callee: contact)),
+                      MaterialPageRoute(
+                        builder: (_) => AudioCallScreen(callee: contact),
+                      ),
                     ),
                     onVideoCall: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => VideoCallScreen(callee: contact)),
+                      MaterialPageRoute(
+                        builder: (_) => VideoCallScreen(callee: contact),
+                      ),
                     ),
                   );
                 },
-                childCount: contacts.visibleContacts.length > 5 ? 5 : contacts.visibleContacts.length,
+                childCount: contacts.visibleContacts.length > 5
+                    ? 5
+                    : contacts.visibleContacts.length,
               ),
             ),
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
-              child: Text('Recent calls', style: Theme.of(context).textTheme.titleMedium),
+              child: Text(
+                'Recent calls',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
             ),
           ),
-          SliverToBoxAdapter(
-            child: _RecentCallsPreview(myUid: auth.uid ?? ''),
-          ),
+          SliverToBoxAdapter(child: _RecentCallsPreview(myUid: auth.uid ?? '')),
           const SliverToBoxAdapter(child: SizedBox(height: 24)),
         ],
       ),
@@ -182,7 +231,8 @@ class _RecentCallsPreview extends StatelessWidget {
     return StreamBuilder<List<CallModel>>(
       stream: CallHistoryService().watchHistory(myUid),
       builder: (context, snapshot) {
-        if (!snapshot.hasData) return const SizedBox(height: 80, child: LoadingIndicator());
+        if (!snapshot.hasData)
+          return const SizedBox(height: 80, child: LoadingIndicator());
         final calls = snapshot.data!.take(3).toList();
         if (calls.isEmpty) {
           return const Padding(
@@ -191,7 +241,9 @@ class _RecentCallsPreview extends StatelessWidget {
           );
         }
         return Column(
-          children: calls.map((c) => _RecentCallRow(call: c, myUid: myUid)).toList(),
+          children: calls
+              .map((c) => _RecentCallRow(call: c, myUid: myUid))
+              .toList(),
         );
       },
     );
@@ -207,18 +259,32 @@ class _RecentCallRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final incoming = call.calleeId == myUid;
     final otherName = incoming ? call.callerName : call.calleeName;
-    final missed = call.status == CallStatus.missed || call.status == CallStatus.rejected;
+    final missed =
+        call.status == CallStatus.missed || call.status == CallStatus.rejected;
     return ListTile(
       leading: CircleAvatar(
         backgroundColor: AppColors.primary.withOpacity(0.12),
-        child: Icon(call.type == CallType.video ? Icons.videocam : Icons.call, color: AppColors.primary, size: 18),
+        child: Icon(
+          call.type == CallType.video ? Icons.videocam : Icons.call,
+          color: AppColors.primary,
+          size: 18,
+        ),
       ),
       title: Text(otherName),
       subtitle: Row(
         children: [
-          Icon(incoming ? Icons.call_received : Icons.call_made, size: 14, color: missed ? AppColors.danger : AppColors.textSecondary),
+          Icon(
+            incoming ? Icons.call_received : Icons.call_made,
+            size: 14,
+            color: missed ? AppColors.danger : AppColors.textSecondary,
+          ),
           const SizedBox(width: 4),
-          Text(missed ? 'Missed' : 'Today', style: TextStyle(color: missed ? AppColors.danger : AppColors.textSecondary)),
+          Text(
+            missed ? 'Missed' : 'Today',
+            style: TextStyle(
+              color: missed ? AppColors.danger : AppColors.textSecondary,
+            ),
+          ),
         ],
       ),
     );

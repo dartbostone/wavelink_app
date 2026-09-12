@@ -9,7 +9,9 @@ class CallHistoryService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   Stream<List<CallModel>> watchHistory(String myUid) {
-    final query = _db.collection('calls').where(
+    final query = _db
+        .collection('calls')
+        .where(
           Filter.or(
             Filter('callerId', isEqualTo: myUid),
             Filter('calleeId', isEqualTo: myUid),
@@ -19,7 +21,11 @@ class CallHistoryService {
       final calls = snapshot.docs
           .map((doc) => CallModel.fromMap(doc.id, doc.data()))
           // Only show calls that reached a terminal state.
-          .where((c) => c.status != CallStatus.ringing && c.status != CallStatus.calling)
+          .where(
+            (c) =>
+                c.status != CallStatus.ringing &&
+                c.status != CallStatus.calling,
+          )
           .toList();
       calls.sort((a, b) => b.createdAt.compareTo(a.createdAt));
       return calls;

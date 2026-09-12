@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../core/constants/app_colors.dart';
 
-/// Reused wherever content is loading (spec: "Loading states").
 class LoadingIndicator extends StatelessWidget {
   final String? label;
   const LoadingIndicator({super.key, this.label});

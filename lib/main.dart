@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 
+import 'firebase_options.dart';
 import 'core/constants/app_strings.dart';
 import 'core/constants/app_theme.dart';
 import 'models/call_model.dart';
@@ -16,19 +17,62 @@ import 'screens/splash/splash_screen.dart';
 import 'services/calling_service.dart';
 import 'services/notification_service.dart';
 
-
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  
-  await Firebase.initializeApp();
+  Object? startupError;
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    await CallingService.instance.initializeEngine();
+    await NotificationService.instance.initialize();
+  } catch (error) {
+    startupError = error;
+  }
 
-  await CallingService.instance.initializeEngine();
-  await NotificationService.instance.initialize();
+  runApp(
+    startupError == null
+        ? const ConnectCallApp()
+        : StartupErrorApp(error: startupError),
+  );
+}
 
-  runApp(const ConnectCallApp());
+class StartupErrorApp extends StatelessWidget {
+  final Object? error;
+
+  const StartupErrorApp({super.key, required this.error});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: AppStrings.appName,
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.error_outline, size: 56),
+                const SizedBox(height: 16),
+                const Text(
+                  'App setup is incomplete',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+                Text(error.toString(), textAlign: TextAlign.center),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class ConnectCallApp extends StatelessWidget {
@@ -60,7 +104,6 @@ class ConnectCallApp extends StatelessWidget {
   }
 }
 
-
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
 
@@ -78,7 +121,6 @@ class AuthGate extends StatelessWidget {
   }
 }
 
-
 class _AuthenticatedShell extends StatefulWidget {
   const _AuthenticatedShell();
 
@@ -92,7 +134,9 @@ class _AuthenticatedShellState extends State<_AuthenticatedShell> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _listenForIncomingCalls());
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _listenForIncomingCalls(),
+    );
   }
 
   void _listenForIncomingCalls() {

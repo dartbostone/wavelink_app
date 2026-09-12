@@ -26,8 +26,8 @@ class AudioCallScreen extends StatefulWidget {
 
   const AudioCallScreen({super.key, this.callee}) : existingCall = null;
   const AudioCallScreen.fromAccepted({super.key, required CallModel call})
-      : existingCall = call,
-        callee = null;
+    : existingCall = call,
+      callee = null;
 
   @override
   State<AudioCallScreen> createState() => _AudioCallScreenState();
@@ -62,10 +62,10 @@ class _AudioCallScreenState extends State<AudioCallScreen> {
     if (caller == null) return;
     try {
       await context.read<CallProvider>().placeCall(
-            caller: caller,
-            callee: widget.callee!,
-            type: CallType.audio,
-          );
+        caller: caller,
+        callee: widget.callee!,
+        type: CallType.audio,
+      );
     } catch (_) {
       if (mounted) {
         setState(() {
@@ -103,7 +103,8 @@ class _AudioCallScreenState extends State<AudioCallScreen> {
 
         final statusText = switch (call.status) {
           CallStatus.ringing => 'Ringing…',
-          CallStatus.connected || CallStatus.inCall => DateFormatUtils.duration(callProvider.elapsed),
+          CallStatus.connected ||
+          CallStatus.inCall => DateFormatUtils.duration(callProvider.elapsed),
           CallStatus.busy => 'User is busy',
           CallStatus.rejected => AppStrings.callRejected,
           CallStatus.missed => 'No answer',
@@ -117,7 +118,8 @@ class _AudioCallScreenState extends State<AudioCallScreen> {
             child: Column(
               children: [
                 const SizedBox(height: 16),
-                if (call.status == CallStatus.connected || call.status == CallStatus.inCall)
+                if (call.status == CallStatus.connected ||
+                    call.status == CallStatus.inCall)
                   NetworkQualityIndicator(quality: callProvider.quality),
                 const Spacer(),
                 CircleAvatar(
@@ -125,16 +127,33 @@ class _AudioCallScreenState extends State<AudioCallScreen> {
                   backgroundColor: AppColors.primary.withOpacity(0.25),
                   child: Text(
                     otherName.isNotEmpty ? otherName[0].toUpperCase() : '?',
-                    style: const TextStyle(fontSize: 44, color: Colors.white, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 44,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 24),
-                Text(otherName, style: const TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w600)),
+                Text(
+                  otherName,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 26,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 const SizedBox(height: 8),
-                Text(statusText, style: const TextStyle(color: Colors.white70, fontSize: 16)),
+                Text(
+                  statusText,
+                  style: const TextStyle(color: Colors.white70, fontSize: 16),
+                ),
                 const Spacer(flex: 2),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 32),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 32,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -145,7 +164,9 @@ class _AudioCallScreenState extends State<AudioCallScreen> {
                         onPressed: callProvider.toggleMute,
                       ),
                       CallControlButton(
-                        icon: callProvider.isSpeakerOn ? Icons.volume_up : Icons.volume_off,
+                        icon: callProvider.isSpeakerOn
+                            ? Icons.volume_up
+                            : Icons.volume_off,
                         label: 'Speaker',
                         active: callProvider.isSpeakerOn,
                         onPressed: callProvider.toggleSpeaker,
@@ -205,11 +226,18 @@ class _ErrorScaffold extends StatelessWidget {
             children: [
               const Icon(Icons.error_outline, color: Colors.white70, size: 48),
               const SizedBox(height: 16),
-              Text(message, style: const TextStyle(color: Colors.white), textAlign: TextAlign.center),
+              Text(
+                message,
+                style: const TextStyle(color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: 24),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Go back', style: TextStyle(color: Colors.white)),
+                child: const Text(
+                  'Go back',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           ),

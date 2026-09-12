@@ -10,7 +10,8 @@ class PermissionUtils {
   static Future<PermissionResult> requestMicrophone() =>
       _request(Permission.microphone);
 
-  static Future<PermissionResult> requestCamera() => _request(Permission.camera);
+  static Future<PermissionResult> requestCamera() =>
+      _request(Permission.camera);
 
   /// Requests both mic + camera together (used before a video call).
   static Future<bool> requestForVideoCall() async {

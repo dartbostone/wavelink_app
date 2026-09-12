@@ -1,11 +1,5 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-/// Bonus 1 & 2 — local notification shown when an incoming call arrives,
-/// including while the app is backgrounded. A production build would pair
-/// this with FCM (push) so the notification can wake the app up from
-/// fully-killed state; that requires a server-side trigger (e.g. a Cloud
-/// Function that watches new `calls` docs) which is out of scope for this
-/// assignment but noted here and in the README.
 class NotificationService {
   NotificationService._internal();
   static final NotificationService instance = NotificationService._internal();
