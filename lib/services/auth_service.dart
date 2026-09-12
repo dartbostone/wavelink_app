@@ -21,6 +21,27 @@ class AuthService {
   /// to decide whether to route to Login or Home).
   Stream<fb.User?> authStateChanges() => _auth.authStateChanges();
 
+  Future<UserModel?> getUserModel(String uid) async {
+    try {
+      final doc = await _db.collection('users').doc(uid).get();
+      if (doc.exists && doc.data() != null) {
+        return UserModel.fromMap(uid, doc.data()!);
+      }
+    } catch (_) {}
+    final fbUser = _auth.currentUser;
+    if (fbUser != null && fbUser.uid == uid) {
+      return UserModel(
+        id: uid,
+        name: fbUser.displayName?.isNotEmpty == true
+            ? fbUser.displayName!
+            : 'User',
+        email: fbUser.email ?? '',
+        isOnline: true,
+      );
+    }
+    return null;
+  }
+
   Future<UserModel> register({
     required String name,
     required String email,
@@ -31,19 +52,25 @@ class AuthService {
         email: email.trim(),
         password: password,
       );
-      final uid = credential.user!.uid;
-      await credential.user!.updateDisplayName(name.trim());
+      final user = credential.user!;
+      final uid = user.uid;
+      try {
+        await user.updateDisplayName(name.trim());
+      } catch (_) {}
 
-      final user = UserModel(
+      final userModel = UserModel(
         id: uid,
         name: name.trim(),
         email: email.trim(),
         isOnline: true,
         lastSeen: DateTime.now(),
       );
-      await _db.collection('users').doc(uid).set(user.toMap());
-      return user;
-    } on fb.FirebaseAuthException catch (e) {
+
+      try {
+        await _db.collection('users').doc(uid).set(userModel.toMap());
+      } catch (_) {}
+      return userModel;
+    } catch (e) {
       throw _mapAuthError(e);
     }
   }
@@ -61,7 +88,6 @@ class AuthService {
       await setOnlineStatus(uid, true);
       final doc = await _db.collection('users').doc(uid).get();
       if (!doc.exists) {
-        // Defensive: user existed in Auth but not Firestore (e.g. migrated).
         final fallback = UserModel(
           id: uid,
           name: credential.user!.displayName ?? 'User',
@@ -72,7 +98,7 @@ class AuthService {
         return fallback;
       }
       return UserModel.fromMap(uid, doc.data()!);
-    } on fb.FirebaseAuthException catch (e) {
+    } catch (e) {
       throw _mapAuthError(e);
     }
   }
@@ -86,28 +112,46 @@ class AuthService {
   }
 
   Future<void> setOnlineStatus(String uid, bool isOnline) async {
-    await _db.collection('users').doc(uid).set({
-      'isOnline': isOnline,
-      'lastSeen': DateTime.now().toIso8601String(),
-    }, SetOptions(merge: true));
+    try {
+      await _db.collection('users').doc(uid).set({
+        'isOnline': isOnline,
+        'lastSeen': DateTime.now().toIso8601String(),
+      }, SetOptions(merge: true));
+    } catch (_) {}
   }
 
-  String _mapAuthError(fb.FirebaseAuthException e) {
-    switch (e.code) {
-      case 'email-already-in-use':
-        return 'An account with this email already exists.';
-      case 'invalid-email':
-        return 'That email address looks invalid.';
-      case 'user-not-found':
-      case 'wrong-password':
-      case 'invalid-credential':
-        return 'Incorrect email or password.';
-      case 'weak-password':
-        return 'Please choose a stronger password (6+ characters).';
-      case 'network-request-failed':
-        return 'No internet connection. Please check your network.';
-      default:
-        return e.message ?? 'Authentication failed. Please try again.';
+  String _mapAuthError(Object e) {
+    if (e is fb.FirebaseAuthException) {
+      switch (e.code) {
+        case 'email-already-in-use':
+          return 'An account with this email already exists.';
+        case 'invalid-email':
+          return 'That email address looks invalid.';
+        case 'user-not-found':
+        case 'wrong-password':
+        case 'invalid-credential':
+          return 'Incorrect email or password.';
+        case 'weak-password':
+          return 'Please choose a stronger password (6+ characters).';
+        case 'network-request-failed':
+          return 'No internet connection. Please check your network.';
+        case 'operation-not-allowed':
+          return 'Email/Password sign-in is disabled in Firebase Console. Please enable Email/Password under Authentication > Sign-in method.';
+        default:
+          return e.message ?? 'Authentication failed (${e.code}).';
+      }
     }
+    if (e is FirebaseException) {
+      switch (e.code) {
+        case 'permission-denied':
+          return 'Firestore permission denied. Please update your Security Rules in Firebase Console.';
+        case 'unavailable':
+          return 'Firestore service unavailable. Please check your network connection.';
+        default:
+          return e.message ?? 'Database error (${e.code}).';
+      }
+    }
+    final msg = e.toString().replaceFirst('Exception: ', '');
+    return msg.isNotEmpty ? msg : 'An unexpected error occurred.';
   }
 }

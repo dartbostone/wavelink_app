@@ -19,6 +19,7 @@ class AuthProvider extends ChangeNotifier {
         status = AuthStatus.unauthenticated;
         currentUser = null;
       } else {
+        currentUser = await _authService.getUserModel(user.uid);
         status = AuthStatus.authenticated;
       }
       notifyListeners();
