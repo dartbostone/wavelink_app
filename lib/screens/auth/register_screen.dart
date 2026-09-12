@@ -36,17 +36,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (!_formKey.currentState!.validate()) return;
     final auth = context.read<AuthProvider>();
     final success = await auth.register(
-      _nameController.text,
-      _emailController.text,
+      _nameController.text.trim(),
+      _emailController.text.trim(),
       _passwordController.text,
     );
-    if (!success && mounted) {
+    if (!mounted) return;
+    if (success) {
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(auth.errorMessage ?? AppStrings.genericError)),
+        SnackBar(
+          content: Text(auth.errorMessage ?? AppStrings.genericError),
+          backgroundColor: AppColors.danger,
+        ),
       );
     }
-    // On success, AuthProvider's authStateChanges listener flips `status`
-    // to authenticated and main.dart's AuthGate swaps to HomeScreen for us.
   }
 
   @override

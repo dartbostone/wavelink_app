@@ -34,12 +34,15 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!_formKey.currentState!.validate()) return;
     final auth = context.read<AuthProvider>();
     final success = await auth.login(
-      _emailController.text,
+      _emailController.text.trim(),
       _passwordController.text,
     );
     if (!success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(auth.errorMessage ?? AppStrings.genericError)),
+        SnackBar(
+          content: Text(auth.errorMessage ?? AppStrings.genericError),
+          backgroundColor: AppColors.danger,
+        ),
       );
     }
   }
