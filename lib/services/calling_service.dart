@@ -224,10 +224,13 @@ class CallingService {
   // ---------------------------------------------------------------------
 
   Future<void> _joinChannel(String channelId, {required bool video}) async {
+    if (_engine == null) {
+      await initializeEngine();
+    }
     final engine = _engine;
     if (engine == null) {
       throw Exception(
-        'CallingService not initialized. Call initializeEngine() first.',
+        'Agora Engine not initialized. Configure AGORA_APP_ID in PlatformConfig or pass via --dart-define=AGORA_APP_ID=...',
       );
     }
     if (video) {
