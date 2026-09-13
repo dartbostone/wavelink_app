@@ -109,14 +109,14 @@ class AuthService {
       isOnline: true,
       lastSeen: DateTime.now(),
     );
-    try {
-      await _db
-          .collection('users')
-          .doc(fallbackUid)
-          .set(fallbackUser.toMap())
-          .timeout(const Duration(seconds: 2));
-    } catch (_) {}
     _fallbackUser = fallbackUser;
+    // Save to Firestore asynchronously without blocking local navigation
+    _db
+        .collection('users')
+        .doc(fallbackUid)
+        .set(fallbackUser.toMap())
+        .timeout(const Duration(seconds: 2))
+        .then((_) {}, onError: (_) {});
     return fallbackUser;
   }
 
@@ -166,14 +166,14 @@ class AuthService {
       isOnline: true,
       lastSeen: DateTime.now(),
     );
-    try {
-      await _db
-          .collection('users')
-          .doc(fallbackUid)
-          .set(fallbackUser.toMap())
-          .timeout(const Duration(seconds: 2));
-    } catch (_) {}
     _fallbackUser = fallbackUser;
+    // Save to Firestore asynchronously without blocking local navigation
+    _db
+        .collection('users')
+        .doc(fallbackUid)
+        .set(fallbackUser.toMap())
+        .timeout(const Duration(seconds: 2))
+        .then((_) {}, onError: (_) {});
     return fallbackUser;
   }
 
