@@ -15,9 +15,27 @@ class AuthProvider extends ChangeNotifier {
   bool isLoading = false;
 
   AuthProvider() {
-    _authService.authStateChanges().listen((user) async {
-      if (user != null) {
-        currentUser = await _authService.getUserModel(user.uid);
+    _init();
+  }
+
+  Future<void> _init() async {
+    final minSplashTimer = Future.delayed(const Duration(seconds: 2));
+
+    AuthStatus pendingStatus = AuthStatus.unauthenticated;
+    UserModel? pendingUser;
+
+    final user = _authService.currentUser;
+    if (user != null) {
+      pendingUser = await _authService.getUserModel(user.uid);
+      pendingStatus = AuthStatus.authenticated;
+    } else if (_authService.currentUid != null) {
+      pendingUser = await _authService.getUserModel(_authService.currentUid!);
+      pendingStatus = AuthStatus.authenticated;
+    }
+
+    _authService.authStateChanges().listen((fbUser) async {
+      if (fbUser != null) {
+        currentUser = await _authService.getUserModel(fbUser.uid);
         status = AuthStatus.authenticated;
       } else if (_authService.currentUid != null) {
         currentUser = await _authService.getUserModel(_authService.currentUid!);
@@ -28,6 +46,14 @@ class AuthProvider extends ChangeNotifier {
       }
       notifyListeners();
     });
+
+    await minSplashTimer;
+
+    if (status == AuthStatus.unknown) {
+      currentUser = pendingUser;
+      status = pendingStatus;
+      notifyListeners();
+    }
   }
 
   Future<bool> login(String email, String password) => _run(() async {
