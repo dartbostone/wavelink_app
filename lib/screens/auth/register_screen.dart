@@ -7,7 +7,7 @@ import '../../core/utils/validators.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common_button.dart';
 
-/// Spec §2 — Registration. Fields: name, email, password, confirm password.
+
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
