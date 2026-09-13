@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 
+import '../firebase_options.dart';
 import '../models/user_model.dart';
 
 /// Wraps Firebase Authentication + the mirrored `users` collection.
@@ -15,6 +16,15 @@ class AuthService {
 
   UserModel? _fallbackUser;
 
+  bool get _hasRealFirebaseKey {
+    try {
+      final key = DefaultFirebaseOptions.currentPlatform.apiKey;
+      return key.isNotEmpty && !key.startsWith('YOUR_FIREBASE_');
+    } catch (_) {
+      return false;
+    }
+  }
+
   fb.User? get currentUser => _auth.currentUser;
   String? get currentUid => _auth.currentUser?.uid ?? _fallbackUser?.id;
   bool get isSignedIn => _auth.currentUser != null || _fallbackUser != null;
@@ -28,7 +38,11 @@ class AuthService {
       return _fallbackUser;
     }
     try {
-      final doc = await _db.collection('users').doc(uid).get();
+      final doc = await _db
+          .collection('users')
+          .doc(uid)
+          .get()
+          .timeout(const Duration(seconds: 2));
       if (doc.exists && doc.data() != null) {
         return UserModel.fromMap(uid, doc.data()!);
       }
@@ -52,96 +66,115 @@ class AuthService {
     required String email,
     required String password,
   }) async {
-    try {
-      final credential = await _auth.createUserWithEmailAndPassword(
-        email: email.trim(),
-        password: password,
-      );
-      final user = credential.user!;
-      final uid = user.uid;
+    if (_hasRealFirebaseKey) {
       try {
-        await user.updateDisplayName(name.trim());
-      } catch (_) {}
+        final credential = await _auth
+            .createUserWithEmailAndPassword(
+              email: email.trim(),
+              password: password,
+            )
+            .timeout(const Duration(seconds: 4));
+        final user = credential.user!;
+        final uid = user.uid;
+        try {
+          await user.updateDisplayName(name.trim());
+        } catch (_) {}
 
-      final userModel = UserModel(
-        id: uid,
-        name: name.trim(),
-        email: email.trim(),
-        isOnline: true,
-        lastSeen: DateTime.now(),
-      );
+        final userModel = UserModel(
+          id: uid,
+          name: name.trim(),
+          email: email.trim(),
+          isOnline: true,
+          lastSeen: DateTime.now(),
+        );
 
-      try {
-        await _db.collection('users').doc(uid).set(userModel.toMap());
+        try {
+          await _db
+              .collection('users')
+              .doc(uid)
+              .set(userModel.toMap())
+              .timeout(const Duration(seconds: 3));
+        } catch (_) {}
+        return userModel;
       } catch (_) {}
-      return userModel;
-    } catch (e) {
-      final cleanName = name.trim().isNotEmpty ? name.trim() : 'User';
-      final cleanEmail = email.trim();
-      final fallbackUid = 'user_${DateTime.now().millisecondsSinceEpoch}';
-      final fallbackUser = UserModel(
-        id: fallbackUid,
-        name: cleanName,
-        email: cleanEmail,
-        isOnline: true,
-        lastSeen: DateTime.now(),
-      );
-      try {
-        await _db
-            .collection('users')
-            .doc(fallbackUid)
-            .set(fallbackUser.toMap());
-      } catch (_) {}
-      _fallbackUser = fallbackUser;
-      return fallbackUser;
     }
+
+    final cleanName = name.trim().isNotEmpty ? name.trim() : 'User';
+    final cleanEmail = email.trim();
+    final fallbackUid = 'user_${DateTime.now().millisecondsSinceEpoch}';
+    final fallbackUser = UserModel(
+      id: fallbackUid,
+      name: cleanName,
+      email: cleanEmail,
+      isOnline: true,
+      lastSeen: DateTime.now(),
+    );
+    try {
+      await _db
+          .collection('users')
+          .doc(fallbackUid)
+          .set(fallbackUser.toMap())
+          .timeout(const Duration(seconds: 2));
+    } catch (_) {}
+    _fallbackUser = fallbackUser;
+    return fallbackUser;
   }
 
   Future<UserModel> login({
     required String email,
     required String password,
   }) async {
-    try {
-      final credential = await _auth.signInWithEmailAndPassword(
-        email: email.trim(),
-        password: password,
-      );
-      final uid = credential.user!.uid;
-      await setOnlineStatus(uid, true);
-      final doc = await _db.collection('users').doc(uid).get();
-      if (!doc.exists) {
-        final fallback = UserModel(
-          id: uid,
-          name: credential.user!.displayName ?? 'User',
-          email: email.trim(),
-          isOnline: true,
-        );
-        await _db.collection('users').doc(uid).set(fallback.toMap());
-        return fallback;
-      }
-      return UserModel.fromMap(uid, doc.data()!);
-    } catch (e) {
-      final nameFromEmail = email.split('@').first;
-      final cleanName = nameFromEmail.isNotEmpty
-          ? nameFromEmail[0].toUpperCase() + nameFromEmail.substring(1)
-          : 'User';
-      final fallbackUid = 'user_${email.trim().toLowerCase().hashCode.abs()}';
-      final fallbackUser = UserModel(
-        id: fallbackUid,
-        name: cleanName,
-        email: email.trim(),
-        isOnline: true,
-        lastSeen: DateTime.now(),
-      );
+    if (_hasRealFirebaseKey) {
       try {
-        await _db
+        final credential = await _auth
+            .signInWithEmailAndPassword(email: email.trim(), password: password)
+            .timeout(const Duration(seconds: 4));
+        final uid = credential.user!.uid;
+        await setOnlineStatus(uid, true);
+        final doc = await _db
             .collection('users')
-            .doc(fallbackUid)
-            .set(fallbackUser.toMap());
+            .doc(uid)
+            .get()
+            .timeout(const Duration(seconds: 3));
+        if (!doc.exists) {
+          final fallback = UserModel(
+            id: uid,
+            name: credential.user!.displayName ?? 'User',
+            email: email.trim(),
+            isOnline: true,
+          );
+          await _db
+              .collection('users')
+              .doc(uid)
+              .set(fallback.toMap())
+              .timeout(const Duration(seconds: 3));
+          return fallback;
+        }
+        return UserModel.fromMap(uid, doc.data()!);
       } catch (_) {}
-      _fallbackUser = fallbackUser;
-      return fallbackUser;
     }
+
+    final nameFromEmail = email.split('@').first;
+    final cleanName = nameFromEmail.isNotEmpty
+        ? nameFromEmail[0].toUpperCase() + nameFromEmail.substring(1)
+        : 'User';
+    final fallbackUid = 'user_${email.trim().toLowerCase().hashCode.abs()}';
+    final fallbackUser = UserModel(
+      id: fallbackUid,
+      name: cleanName,
+      email: email.trim(),
+      isOnline: true,
+      lastSeen: DateTime.now(),
+    );
+    try {
+      await _db
+          .collection('users')
+          .doc(fallbackUid)
+          .set(fallbackUser.toMap())
+          .timeout(const Duration(seconds: 2));
+    } catch (_) {}
+    _fallbackUser = fallbackUser;
+    return fallbackUser;
   }
 
   Future<void> logout() async {
@@ -157,10 +190,14 @@ class AuthService {
 
   Future<void> setOnlineStatus(String uid, bool isOnline) async {
     try {
-      await _db.collection('users').doc(uid).set({
-        'isOnline': isOnline,
-        'lastSeen': DateTime.now().toIso8601String(),
-      }, SetOptions(merge: true));
+      await _db
+          .collection('users')
+          .doc(uid)
+          .set({
+            'isOnline': isOnline,
+            'lastSeen': DateTime.now().toIso8601String(),
+          }, SetOptions(merge: true))
+          .timeout(const Duration(seconds: 2));
     } catch (_) {}
   }
 
