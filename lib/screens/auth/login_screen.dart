@@ -4,11 +4,10 @@ import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/utils/validators.dart';
+import '../../main.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common_button.dart';
-import '../home/home_screen.dart';
 import 'register_screen.dart';
-
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -40,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
     if (success) {
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
+        MaterialPageRoute(builder: (_) => const AuthGate()),
         (route) => false,
       );
     } else {
@@ -141,10 +140,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 8),
                 Center(
                   child: TextButton(
-                    onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (_) => const HomeScreen()),
-                      (route) => false,
-                    ),
+                    onPressed: () async {
+                      await context.read<AuthProvider>().guestLogin();
+                      if (context.mounted) {
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (_) => const AuthGate()),
+                          (route) => false,
+                        );
+                      }
+                    },
                     child: const Text(
                       'Continue to Home Screen',
                       style: TextStyle(

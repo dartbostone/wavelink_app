@@ -114,7 +114,7 @@ class _DashboardTab extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Hi, ${user?.name.split(' ').first ?? 'there'} 👋',
+                          'Hi, ${user?.name.split(' ').first ?? 'there'}',
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                         Text(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../main.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../widgets/common_button.dart';
@@ -123,6 +124,13 @@ class ProfileScreen extends StatelessWidget {
               );
               if (confirmed == true) {
                 await context.read<AuthProvider>().logout();
+                final navigator = rootNavigatorKey.currentState;
+                if (navigator != null) {
+                  navigator.pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (_) => const AuthGate()),
+                    (route) => false,
+                  );
+                }
               }
             },
           ),

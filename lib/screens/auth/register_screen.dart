@@ -4,9 +4,9 @@ import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../core/utils/validators.dart';
+import '../../main.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/common_button.dart';
-import '../home/home_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -43,7 +43,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (!mounted) return;
     if (success) {
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
+        MaterialPageRoute(builder: (_) => const AuthGate()),
         (route) => false,
       );
     } else {

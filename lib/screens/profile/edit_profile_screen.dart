@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 
 import '../../core/utils/validators.dart';
 import '../../providers/auth_provider.dart';
-import '../../services/user_service.dart';
 import '../../widgets/common_button.dart';
 
 /// Spec §5 (Optional) — update display name / avatar.
@@ -17,7 +16,6 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
-  final UserService _userService = UserService();
   bool _saving = false;
 
   @override
@@ -35,20 +33,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
-    final uid = context.read<AuthProvider>().uid;
-    if (uid == null) return;
     setState(() => _saving = true);
-    try {
-      await _userService.updateProfile(uid, name: _nameController.text.trim());
-      if (mounted) Navigator.of(context).pop();
-    } catch (_) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not update profile. Try again.')),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _saving = false);
+    final auth = context.read<AuthProvider>();
+    final success = await auth.updateProfile(name: _nameController.text.trim());
+    if (!mounted) return;
+    setState(() => _saving = false);
+    if (success) {
+      Navigator.of(context).pop();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not update profile. Try again.')),
+      );
     }
   }
 

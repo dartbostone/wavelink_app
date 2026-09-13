@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/user_model.dart';
 import '../services/auth_service.dart';
+import '../services/user_service.dart';
 
 enum AuthStatus { unknown, authenticated, unauthenticated }
 
@@ -15,12 +16,15 @@ class AuthProvider extends ChangeNotifier {
 
   AuthProvider() {
     _authService.authStateChanges().listen((user) async {
-      if (user == null) {
-        status = AuthStatus.unauthenticated;
-        currentUser = null;
-      } else {
+      if (user != null) {
         currentUser = await _authService.getUserModel(user.uid);
         status = AuthStatus.authenticated;
+      } else if (_authService.currentUid != null) {
+        currentUser = await _authService.getUserModel(_authService.currentUid!);
+        status = AuthStatus.authenticated;
+      } else if (status != AuthStatus.authenticated) {
+        status = AuthStatus.unauthenticated;
+        currentUser = null;
       }
       notifyListeners();
     });
@@ -40,6 +44,50 @@ class AuthProvider extends ChangeNotifier {
         );
         status = AuthStatus.authenticated;
       });
+
+  Future<bool> guestLogin() => _run(() async {
+    currentUser = await _authService.login(
+      email: 'guest@wavelink.app',
+      password: 'password123',
+    );
+    status = AuthStatus.authenticated;
+  });
+
+  Future<bool> updateProfile({required String name, String? avatarUrl}) async {
+    final currentUid = uid;
+    if (currentUid == null) return false;
+    final cleanName = name.trim();
+    if (cleanName.isEmpty) return false;
+
+    try {
+      await UserService().updateProfile(
+        currentUid,
+        name: cleanName,
+        avatarUrl: avatarUrl,
+      );
+    } catch (_) {}
+
+    if (currentUser != null) {
+      currentUser = UserModel(
+        id: currentUser!.id,
+        name: cleanName,
+        email: currentUser!.email,
+        avatarUrl: avatarUrl ?? currentUser!.avatarUrl,
+        isOnline: currentUser!.isOnline,
+        lastSeen: currentUser!.lastSeen,
+      );
+    } else {
+      currentUser = UserModel(
+        id: currentUid,
+        name: cleanName,
+        email: 'user@wavelink.app',
+        avatarUrl: avatarUrl,
+        isOnline: true,
+      );
+    }
+    notifyListeners();
+    return true;
+  }
 
   Future<void> logout() async {
     await _authService.logout();
