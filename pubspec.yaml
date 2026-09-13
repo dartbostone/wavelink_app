@@ -21,6 +21,9 @@ dependencies:
   connectivity_plus: ^7.3.1
   flutter_local_notifications: ^22.3.0
 
+dependency_overrides:
+  permission_handler_android: 12.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,0 +1,41 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run Flutter on Windows",
+			"type": "shell",
+			"command": "flutter run -d windows",
+			"isBackground": true
+		},
+		{
+			"label": "Run Flutter in Chrome",
+			"type": "shell",
+			"command": "flutter run -d chrome",
+			"isBackground": true
+		},
+		{
+			"label": "Run Flutter on Chrome",
+			"type": "shell",
+			"command": "flutter run -d chrome",
+			"isBackground": true
+		},
+		{
+			"label": "Build Android APK",
+			"type": "shell",
+			"command": "flutter build apk --debug",
+			"isBackground": false
+		},
+		{
+			"label": "Run Flutter in Chrome",
+			"type": "shell",
+			"command": "flutter run -d chrome",
+			"isBackground": true
+		},
+		{
+			"label": "Run Flutter on Chrome",
+			"type": "shell",
+			"command": "flutter run -d chrome",
+			"isBackground": true
+		}
+	]
+}

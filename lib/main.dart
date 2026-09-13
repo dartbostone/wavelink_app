@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -22,22 +24,32 @@ final rootNavigatorKey = GlobalKey<NavigatorState>();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  Object? startupError;
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
-    );
-    await CallingService.instance.initializeEngine();
-    await NotificationService.instance.initialize();
+    ).timeout(const Duration(seconds: 8));
   } catch (error) {
-    startupError = error;
+    runApp(StartupErrorApp(error: error));
+    return;
   }
 
-  runApp(
-    startupError == null
-        ? const ConnectCallApp()
-        : StartupErrorApp(error: startupError),
-  );
+  runApp(const ConnectCallApp());
+
+  unawaited(_initializeOptionalServices());
+}
+
+Future<void> _initializeOptionalServices() async {
+  try {
+    await CallingService.instance.initializeEngine();
+  } catch (error) {
+    debugPrint('Agora initialization failed: $error');
+  }
+
+  try {
+    await NotificationService.instance.initialize();
+  } catch (error) {
+    debugPrint('Notification initialization failed: $error');
+  }
 }
 
 class StartupErrorApp extends StatelessWidget {
