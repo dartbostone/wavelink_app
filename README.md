@@ -1,6 +1,6 @@
 Project description
 
-ConnectCall is a 1-to-1 audio and video calling app built in Flutter for the Flutter Development Intern assignment. It covers the full user journey: sign up / log in, browse and search contacts, place or receive an audio or video call, control the call (mute, speaker, camera, camera switch), and review past calls in a history log — with real authentication, a real-time backend, and a real calling SDK rather than a static UI mock-up.
+Wavelink is a 1-to-1 audio and video calling app built in Flutter for the Flutter Development Intern assignment. It covers the full user journey: sign up / log in, browse and search contacts, place or receive an audio or video call, control the call (mute, speaker, camera, camera switch), and review past calls in a history log — with real authentication, a real-time backend, and a real calling SDK rather than a static UI mock-up.
 
 Features
 
